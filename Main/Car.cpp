@@ -8,10 +8,14 @@ void Car::setupFrontWheels(int fl1, int fl2, int fr3, int fr4, int flSpeed, int 
   frontRightIn4 = fr4;
   frontLeftSpeed = flSpeed;
   frontRightSpeed = frSpeed;
-}
 
-void Car::setCarSpeed(int sp){
-  carSpeed = sp;
+  pinMode(frontLeftIn1, OUTPUT);
+  pinMode(frontLeftIn2, OUTPUT);
+  pinMode(frontRightIn3, OUTPUT);
+  pinMode(frontRightIn4, OUTPUT);
+
+  pinMode(frontLeftSpeed, OUTPUT);
+  pinMode(frontRightSpeed, OUTPUT);
 }
 
 void Car::setupBackWheels(int bl1, int bl2, int br3, int br4, int blSpeed, int brSpeed) {
@@ -21,24 +25,13 @@ void Car::setupBackWheels(int bl1, int bl2, int br3, int br4, int blSpeed, int b
   backRightIn4 = br4;
   backLeftSpeed = blSpeed;
   backRightSpeed = brSpeed;
-}
 
-void Car::begin() {
-  // Set motor pins as outputs
   pinMode(backLeftSpeed, OUTPUT);
   pinMode(backRightSpeed, OUTPUT);
   pinMode(backLeftIn1, OUTPUT);
   pinMode(backLeftIn2, OUTPUT);
   pinMode(backRightIn3, OUTPUT);
   pinMode(backRightIn4, OUTPUT);
-
-  pinMode(frontLeftIn1, OUTPUT);
-  pinMode(frontLeftIn2, OUTPUT);
-  pinMode(frontRightIn3, OUTPUT);
-  pinMode(frontRightIn4, OUTPUT);
-
-  pinMode(frontLeftSpeed, OUTPUT);
-  pinMode(frontRightSpeed, OUTPUT);
 }
 
 void Car::goForward(int flSpeed, int frSpeed, int blSpeed, int brSpeed) {
@@ -61,7 +54,9 @@ void Car::goForward(int flSpeed, int frSpeed, int blSpeed, int brSpeed) {
   analogWrite(backRightSpeed, brSpeed);
   analogWrite(backLeftSpeed, blSpeed);
 }
-void Car::goBackward(int frontLeftSpeed, int frontRightSpeed, int backLeftSpeed, int backRightSpeed) {
+
+void Car::goBackward(int flSpeed, int frSpeed, int blSpeed, int brSpeed)
+{
   stopCar();
   digitalWrite(frontLeftIn1, HIGH);
   digitalWrite(frontLeftIn2, LOW);
@@ -69,8 +64,8 @@ void Car::goBackward(int frontLeftSpeed, int frontRightSpeed, int backLeftSpeed,
   digitalWrite(frontRightIn3, LOW);
   digitalWrite(frontRightIn4, HIGH);
 
-  analogWrite(frontLeftSpeed, frontLeftSpeed);
-  analogWrite(frontRightSpeed, frontRightSpeed);
+  analogWrite(frontLeftSpeed, flSpeed);
+  analogWrite(frontRightSpeed, frSpeed);
 
   digitalWrite(backLeftIn1, HIGH);
   digitalWrite(backLeftIn2, LOW);
@@ -78,158 +73,40 @@ void Car::goBackward(int frontLeftSpeed, int frontRightSpeed, int backLeftSpeed,
   digitalWrite(backRightIn3, LOW);
   digitalWrite(backRightIn4, HIGH);
 
-  analogWrite(backRightSpeed, backRightSpeed);
-  analogWrite(backLeftSpeed, backLeftSpeed);
+  analogWrite(backRightSpeed, brSpeed);
+  analogWrite(backLeftSpeed, blSpeed);
 }
 
 void Car::forward() {
-  stopCar();
-  digitalWrite(frontLeftIn1, LOW);
-  digitalWrite(frontLeftIn2, HIGH);
-
-  digitalWrite(frontRightIn3, HIGH);
-  digitalWrite(frontRightIn4, LOW);
-
-  analogWrite(frontLeftSpeed, carSpeed);
-  analogWrite(frontRightSpeed, carSpeed);
-
-  digitalWrite(backLeftIn1, LOW);
-  digitalWrite(backLeftIn2, HIGH);
-
-  digitalWrite(backRightIn3, HIGH);
-  digitalWrite(backRightIn4, LOW);
-
-  analogWrite(backRightSpeed, carSpeed);
-  analogWrite(backLeftSpeed, carSpeed);
+  goForward(115, 115, 115, 115);
 }
 
 void Car::backward() {
-  stopCar();
-  digitalWrite(frontLeftIn1, HIGH);
-  digitalWrite(frontLeftIn2, LOW);
-
-  digitalWrite(frontRightIn3, LOW);
-  digitalWrite(frontRightIn4, HIGH);
-
-  analogWrite(frontLeftSpeed, carSpeed);
-  analogWrite(frontRightSpeed, carSpeed);
-
-  digitalWrite(backLeftIn1, HIGH);
-  digitalWrite(backLeftIn2, LOW);
-
-  digitalWrite(backRightIn3, LOW);
-  digitalWrite(backRightIn4, HIGH);
-
-  analogWrite(backRightSpeed, carSpeed);
-  analogWrite(backLeftSpeed, carSpeed);
+  goBackward(115, 115, 115, 115);
 }
 
 void Car::push() {
-  stopCar();
-  digitalWrite(frontLeftIn1, LOW);
-  digitalWrite(frontLeftIn2, HIGH);
-
-  digitalWrite(frontRightIn3, HIGH);
-  digitalWrite(frontRightIn4, LOW);
-
-  analogWrite(frontLeftSpeed, 255);
-  analogWrite(frontRightSpeed, 255);
-
-  digitalWrite(backLeftIn1, LOW);
-  digitalWrite(backLeftIn2, HIGH);
-
-  digitalWrite(backRightIn3, HIGH);
-  digitalWrite(backRightIn4, LOW);
-
-  analogWrite(backRightSpeed, 255);
-  analogWrite(backLeftSpeed, 255);
+  goForward(255, 255, 255, 255);
 }
 
 void Car::turnLeft() {
-  stopCar();
-  digitalWrite(frontLeftIn1, LOW);
-  digitalWrite(frontLeftIn2, LOW);
+  goForward(0, 115, 0, 115);
+}
 
-  digitalWrite(frontRightIn3, HIGH);
-  digitalWrite(frontRightIn4, LOW);
-
-  analogWrite(frontLeftSpeed, 0);
-  analogWrite(frontRightSpeed, carSpeed);
-
-  digitalWrite(backLeftIn1, LOW);
-  digitalWrite(backLeftIn2, LOW);
-
-  digitalWrite(backRightIn3, HIGH);
-  digitalWrite(backRightIn4, LOW);
-
-  analogWrite(backRightSpeed, carSpeed);
-  analogWrite(backLeftSpeed, 0);
+void Car::turnRight()
+{
+  goForward(115, 0, 115, 0);
 }
 
 void Car::backLeft() {
-  stopCar();
-  Serial.println("back left");
-  digitalWrite(frontLeftIn1, HIGH);
-  digitalWrite(frontLeftIn2, LOW);
 
-  digitalWrite(frontRightIn3, LOW);
-  digitalWrite(frontRightIn4, HIGH);
-
-  analogWrite(frontLeftSpeed, 115);
-  analogWrite(frontRightSpeed, 255);
-
-  digitalWrite(backLeftIn1, HIGH);
-  digitalWrite(backLeftIn2, LOW);
-
-  digitalWrite(backRightIn3, LOW);
-  digitalWrite(backRightIn4, HIGH);
-
-  analogWrite(backRightSpeed, 255);
-  analogWrite(backLeftSpeed, 115);
+  goBackward(115, 255, 115, 255);
 }
 
 void Car::backRight() {
-  stopCar();
-  Serial.println("back right");
-  digitalWrite(frontLeftIn1, HIGH);
-  digitalWrite(frontLeftIn2, LOW);
-
-  digitalWrite(frontRightIn3, LOW);
-  digitalWrite(frontRightIn4, HIGH);
-
-  analogWrite(frontLeftSpeed, 255);
-  analogWrite(frontRightSpeed, 115);
-
-  digitalWrite(backLeftIn1, HIGH);
-  digitalWrite(backLeftIn2, LOW);
-
-  digitalWrite(backRightIn3, LOW);
-  digitalWrite(backRightIn4, HIGH);
-
-  analogWrite(backRightSpeed, 115);
-  analogWrite(backLeftSpeed, 255);
+  goBackward(255, 115, 255, 115);
 }
 
-void Car::turnRight() {
-  stopCar();
-  digitalWrite(frontLeftIn1, LOW);
-  digitalWrite(frontLeftIn2, HIGH);
-
-  digitalWrite(frontRightIn3, LOW);
-  digitalWrite(frontRightIn4, LOW);
-
-  analogWrite(frontLeftSpeed, carSpeed);
-  analogWrite(frontRightSpeed, 0);
-
-  digitalWrite(backLeftIn1, LOW);
-  digitalWrite(backLeftIn2, HIGH);
-
-  digitalWrite(backRightIn3, LOW);
-  digitalWrite(backRightIn4, LOW);
-
-  analogWrite(backRightSpeed, 0);
-  analogWrite(backLeftSpeed, carSpeed);
-}
 
 void Car::stopCar() {
   digitalWrite(frontLeftIn1, LOW);
