@@ -99,7 +99,6 @@ void Car::turnRight()
 }
 
 void Car::backLeft() {
-
   goBackward(115, 255, 115, 255);
 }
 

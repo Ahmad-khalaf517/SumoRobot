@@ -2,6 +2,9 @@
 #include "Arduino.h"
 
 Car myCar;
+char autonomos = 'm';
+char input;
+
 void setup()
 {
   myCar.setupFrontWheels(2, 3, 4, 5, 9, 10);
@@ -9,12 +12,13 @@ void setup()
   Serial.begin(9600);
 }
 
-void stop(){
+void stop()
+{
   myCar.stopCar();
   delay(500);
 }
 
-void loop()
+void moveCar()
 {
   myCar.push();
   delay(1000);
@@ -37,4 +41,29 @@ void loop()
   myCar.backRight();
   delay(1000);
   stop();
+}
+
+void loop()
+{
+  if (Serial.available())
+  {
+    input = Serial.read();
+
+    if (input == 'a' || input == 'm')
+    {
+      autonomos = input;
+    }
+    else
+    {
+      Serial.println(input);
+      myCar.moveCar(input);
+      delay(500);
+    }
+  }
+
+  if (autonomos == 'a')
+  {
+    moveCar();
+  }
+  delay(500);
 }
