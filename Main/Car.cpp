@@ -79,31 +79,38 @@ void Car::goBackward(int flSpeed, int frSpeed, int blSpeed, int brSpeed)
 }
 
 void Car::forward() {
+  Serial.println("forward");
   goForward(115, 115, 115, 115);
 }
 
 void Car::backward() {
+  Serial.println("backward");
   goBackward(115, 115, 115, 115);
 }
 
 void Car::push() {
+  Serial.println("push");
   goForward(255, 255, 255, 255);
 }
 
 void Car::turnLeft() {
+  Serial.println("turnLeft");
   goForward(0, 115, 0, 115);
 }
 
 void Car::turnRight()
 {
+  Serial.println("turnRight");
   goForward(115, 0, 115, 0);
 }
 
 void Car::backLeft() {
+  Serial.println("backLeft");
   goBackward(115, 255, 115, 255);
 }
 
 void Car::backRight() {
+  Serial.println("backRight");
   goBackward(255, 115, 255, 115);
 }
 

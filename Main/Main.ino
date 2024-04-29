@@ -8,10 +8,9 @@ int echoPin = 45; // ECHO pin
 float duration_us, distance;
 
 // infrared to detect obstacle
-int obs_front = 41;
-int obs_back = 42;
-int obs_right = 40;
-int obs_left = 43;
+int obs_front_left = 22;
+int obs_front_right = 23;
+int obs_back_left = 24;
 
 Car myCar;
 char autonomos = 'm';
@@ -23,10 +22,9 @@ void setup()
   myCar.setupBackWheels(7, 8, 12, 13, 6, 11);
   Serial.begin(9600);
 
-  pinMode(obs_front, INPUT);
-  pinMode(obs_back, INPUT);
-  pinMode(obs_right, INPUT);
-  pinMode(obs_left, INPUT);
+  pinMode(obs_front_left, INPUT);
+  pinMode(obs_front_right, INPUT);
+  pinMode(obs_back_left, INPUT);
 
   // configure the trigger pin to output mode
   pinMode(trigPin, OUTPUT);
@@ -34,7 +32,7 @@ void setup()
   pinMode(echoPin, INPUT);
 }
 
-void setDistance()
+void readDistance()
 {
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(20);
@@ -46,41 +44,16 @@ void setDistance()
   // calculate the distance
   distance = 0.017 * duration_us;
 
-  // print the value to Serial Monitor
-  Serial.print("distance: ");
-  Serial.print(distance);
-  Serial.println(" cm");
+  // // print the value to Serial Monitor
+  // Serial.print("distance: ");
+  // Serial.print(distance);
+  // Serial.println(" cm");
 }
 
 void stop()
 {
   myCar.stopCar();
-  delay(500);
-}
-
-void moveCar()
-{
-  myCar.push();
-  delay(1000);
-  stop();
-  myCar.backward();
-  delay(1000);
-  stop();
-  myCar.forward();
-  delay(1000);
-  stop();
-  myCar.turnLeft();
-  delay(1000);
-  stop();
-  myCar.turnRight();
-  delay(1000);
-  stop();
-  myCar.backLeft();
-  delay(1000);
-  stop();
-  myCar.backRight();
-  delay(1000);
-  stop();
+  delay(100);
 }
 
 void bluetooth()
@@ -103,51 +76,61 @@ void bluetooth()
 
   if (autonomos == 'a')
   {
-    moveCar();
+    // moveCar();
   }
   delay(500);
 }
 
 void loop()
 {
-  int IR1 = digitalRead(obs_front);
-  int IR2 = digitalRead(obs_back);
-  int IR3 = digitalRead(obs_right);
-  int IR4 = digitalRead(obs_left);
-  setDistance();
-  delay(200);
+  int ir_front_left = digitalRead(obs_front_left);
+  int ir_front_right = digitalRead(obs_front_right);
+  int ir_back_left = digitalRead(obs_back_left);
 
-  if (distance > 150)
+  readDistance();
+
+  if (distance > 150 && (ir_front_left == HIGH && ir_front_right == HIGH))
   {
+    Serial.println("turn left");
     myCar.turnLeft();
-    setDistance();
-    delay(200);
+    readDistance();
   }
-  else if (distance <= 90 && distance > 30)
+  else if (distance <= 50 && distance > 20)
   {
     myCar.forward();
-    setDistance();
-    delay(200);
+    readDistance();
   }
-  else if (distance <= 30 && distance > 20)
-  {
-    myCar.forward();
-    setDistance();
-    delay(200);
-  }
-  IR1 = digitalRead(obs_front);
 
+  if (ir_front_left == LOW && ir_front_right == HIGH)
+    myCar.turnLeft();
+
+  if (ir_front_left == HIGH && ir_front_right == LOW)
+    myCar.turnRight();
+
+  int getInWhileLoop = 0;
   while (distance <= 20)
   {
-    delay(500);
-
+    getInWhileLoop++;
     myCar.push();
-    setDistance();
+    readDistance();
 
-    IR1 = digitalRead(obs_front);
-    IR2 = digitalRead(obs_back);
-    IR3 = digitalRead(obs_right);
-    IR4 = digitalRead(obs_left);
+    ir_front_left = digitalRead(obs_front_left);
+    ir_front_right = digitalRead(obs_front_right);
+    ir_back_left = digitalRead(obs_back_left);
 
+    // this code should be repalces with lin tracker sensor values
+    // added for test purpose so the car stops when it push the apponent for 20 while loop attemps
+    if (getInWhileLoop == 20)
+    {
+      myCar.stopCar();
+      delay(100);
+      myCar.backward();
+      delay(600);
+      myCar.turnLeft();
+      delay(500);
+      myCar.stopCar();
+      delay(100);
+    }
   }
+  delay(100);
 }
