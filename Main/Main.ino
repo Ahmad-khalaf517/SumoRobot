@@ -35,19 +35,14 @@ void setup()
 void readDistance()
 {
   digitalWrite(trigPin, HIGH);
-  delayMicroseconds(20);
+  delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
 
   // measure duration of pulse from ECHO pin
   duration_us = pulseIn(echoPin, HIGH);
 
   // calculate the distance
-  distance = 0.017 * duration_us;
-
-  // // print the value to Serial Monitor
-  // Serial.print("distance: ");
-  // Serial.print(distance);
-  // Serial.println(" cm");
+  distance = 0.017 * duration_us / 2;
 }
 
 void stop()
@@ -91,7 +86,6 @@ void loop()
 
   if (distance > 150 && (ir_front_left == HIGH && ir_front_right == HIGH))
   {
-    Serial.println("turn left");
     myCar.turnLeft();
     readDistance();
   }
@@ -107,30 +101,15 @@ void loop()
   if (ir_front_left == HIGH && ir_front_right == LOW)
     myCar.turnRight();
 
-  int getInWhileLoop = 0;
-  while (distance <= 20)
+  if (distance <= 20)
   {
-    getInWhileLoop++;
     myCar.push();
+    delay(1000);
     readDistance();
 
     ir_front_left = digitalRead(obs_front_left);
     ir_front_right = digitalRead(obs_front_right);
     ir_back_left = digitalRead(obs_back_left);
-
-    // this code should be repalces with lin tracker sensor values
-    // added for test purpose so the car stops when it push the apponent for 20 while loop attemps
-    if (getInWhileLoop == 20)
-    {
-      myCar.stopCar();
-      delay(100);
-      myCar.backward();
-      delay(600);
-      myCar.turnLeft();
-      delay(500);
-      myCar.stopCar();
-      delay(100);
-    }
   }
   delay(100);
 }
