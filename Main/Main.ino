@@ -11,6 +11,28 @@ float duration_us, distance;
 int obs_front_left = 22;
 int obs_front_right = 23;
 int obs_back_left = 24;
+int obs_back_right = 25;
+
+// line tracker
+int lnFrontLeft = A0;
+int lnFrontLeftD = 30;
+int lnFrontLeftValue;
+int isLnFrontLeft;
+
+int lnFrontRight = A1;
+int lnFrontRightD = 31;
+int lnFrontRightValue;
+int isLnFrontRight;
+
+int lnBackLeft = A2;
+int lnBackLeftD = 32;
+int lnBackLeftValue;
+int isLnBackLeft;
+
+int lnBackRight = A3;
+int lnBackRightD = 33;
+int lnBackRightValue;
+int isLnBackRight;
 
 Car myCar;
 char autonomos = 'm';
@@ -25,6 +47,19 @@ void setup()
   pinMode(obs_front_left, INPUT);
   pinMode(obs_front_right, INPUT);
   pinMode(obs_back_left, INPUT);
+  pinMode(obs_back_right, INPUT);
+
+  // line tracker analog values
+  pinMode(lnFrontLeft, INPUT);
+  pinMode(lnFrontRight, INPUT);
+  pinMode(lnBackLeft, INPUT);
+  pinMode(lnBackRight, INPUT);
+
+  //  line tracker digital values
+  pinMode(lnFrontLeftD, INPUT);
+  pinMode(lnFrontRightD, INPUT);
+  pinMode(lnBackLeftD, INPUT);
+  pinMode(lnBackRightD, INPUT);
 
   // configure the trigger pin to output mode
   pinMode(trigPin, OUTPUT);
@@ -76,40 +111,63 @@ void bluetooth()
   delay(500);
 }
 
+void readLineTrackerSensors()
+{
+
+  //  line tracker analog values
+  lnFrontLeftValue = analogRead(lnFrontLeft);
+  lnFrontRightValue = analogRead(lnFrontRight);
+  lnBackLeftValue = analogRead(lnBackLeft);
+  lnBackRightValue = analogRead(lnBackRight);
+
+  //  line tracker digital values
+  isLnFrontLeft = digitalRead(lnFrontLeftD) == LOW && lnFrontLeftValue < 150;
+  isLnFrontRight = digitalRead(lnFrontRightD) == LOW && lnFrontRightValue < 150;
+  isLnBackLeft = digitalRead(lnBackLeftD) == LOW && lnBackLeftValue < 150;
+  isLnBackRight = digitalRead(lnBackRightD) == LOW && lnBackRightValue < 150;
+}
+
 void loop()
 {
-  int ir_front_left = digitalRead(obs_front_left);
-  int ir_front_right = digitalRead(obs_front_right);
-  int ir_back_left = digitalRead(obs_back_left);
-
   readDistance();
+  readLineTrackerSensors();
 
-  if (distance > 150 && (ir_front_left == HIGH && ir_front_right == HIGH))
-  {
-    myCar.turnLeft();
-    readDistance();
-  }
-  else if (distance <= 50 && distance > 20)
+  if (isLnBackLeft && isLnBackRight)
   {
     myCar.forward();
-    readDistance();
+    delay(200);
   }
-
-  if (ir_front_left == LOW && ir_front_right == HIGH)
-    myCar.turnLeft();
-
-  if (ir_front_left == HIGH && ir_front_right == LOW)
-    myCar.turnRight();
-
-  if (distance <= 20)
+  else if (isLnFrontLeft && isLnFrontRight)
   {
-    myCar.push();
-    delay(1000);
-    readDistance();
-
-    ir_front_left = digitalRead(obs_front_left);
-    ir_front_right = digitalRead(obs_front_right);
-    ir_back_left = digitalRead(obs_back_left);
+    myCar.backward();
+    delay(200);
   }
-  delay(100);
+  else if (isLnBackLeft)
+  {
+    myCar.turnRight();
+    delay(200);
+  }
+  else if (isLnBackRight)
+  {
+    myCar.turnLeft();
+    delay(200);
+  }
+  else if (isLnFrontLeft)
+  {
+    myCar.backRight();
+    delay(200);
+  }
+  else if (isLnFrontRight)
+  {
+    myCar.backLeft();
+    delay(200);
+  } if (distance <= 100){
+    if(distance >= 50) myCar.forward();
+    else
+      myCar.push();
+  }
+  else
+  {
+    myCar.rotateLeft(100);
+  }
 }
