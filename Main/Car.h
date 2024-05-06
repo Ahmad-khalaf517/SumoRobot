@@ -20,9 +20,6 @@ class Car {
     int backRightSpeed;
     int backLeftSpeed;
 
-    int frontWheelsSpeed;
-    int backWheelsSpeed;
-
     void goForward(int frontLeftSpeed, int frontRightSpeed, int backLeftSpeed, int backRightSpeed);
     void goBackward(int frontLeftSpeed, int frontRightSpeed, int backLeftSpeed, int backRightSpeed);
 
@@ -39,6 +36,7 @@ class Car {
     void backRight();
     void moveCar(char direc);
     void stopCar();
+    void rotateLeft(int speed);
 };
 
 #endif

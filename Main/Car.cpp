@@ -87,7 +87,6 @@ void Car::backward() {
 }
 
 void Car::push() {
-  Serial.println("push");
   goForward(255, 255, 255, 255);
 }
 
@@ -106,6 +105,27 @@ void Car::backLeft() {
 
 void Car::backRight() {
   goBackward(255, 115, 255, 115);
+}
+
+void Car::rotateLeft(int speed){
+  stopCar();
+  digitalWrite(frontLeftIn1, LOW);
+  digitalWrite(frontLeftIn2, HIGH);
+
+  digitalWrite(frontRightIn3, LOW);
+  digitalWrite(frontRightIn4, HIGH);
+
+  analogWrite(frontLeftSpeed, speed);
+  analogWrite(frontRightSpeed, speed);
+
+  digitalWrite(backLeftIn1, LOW);
+  digitalWrite(backLeftIn2, HIGH);
+
+  digitalWrite(backRightIn3, LOW);
+  digitalWrite(backRightIn4, HIGH);
+
+  analogWrite(backRightSpeed, speed);
+  analogWrite(backLeftSpeed, speed);
 }
 
 
