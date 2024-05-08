@@ -91,12 +91,46 @@ void Car::push() {
 }
 
 void Car::turnLeft() {
-  goForward(0, 115, 0, 115);
+  stopCar();
+  digitalWrite(frontLeftIn1, LOW);
+  digitalWrite(frontLeftIn2, LOW);
+
+  digitalWrite(frontRightIn3, HIGH);
+  digitalWrite(frontRightIn4, LOW);
+
+  analogWrite(frontLeftSpeed, 0);
+  analogWrite(frontRightSpeed, 115);
+
+  digitalWrite(backLeftIn1, LOW);
+  digitalWrite(backLeftIn2, LOW);
+
+  digitalWrite(backRightIn3, HIGH);
+  digitalWrite(backRightIn4, LOW);
+
+  analogWrite(backRightSpeed, 115);
+  analogWrite(backLeftSpeed, 0);
 }
 
 void Car::turnRight()
 {
-  goForward(115, 0, 115, 0);
+  stopCar();
+  digitalWrite(frontLeftIn1, LOW);
+  digitalWrite(frontLeftIn2, HIGH);
+
+  digitalWrite(frontRightIn3, LOW);
+  digitalWrite(frontRightIn4, LOW);
+
+  analogWrite(frontLeftSpeed, 115);
+  analogWrite(frontRightSpeed, 0);
+
+  digitalWrite(backLeftIn1, LOW);
+  digitalWrite(backLeftIn2, HIGH);
+
+  digitalWrite(backRightIn3, LOW);
+  digitalWrite(backRightIn4, LOW);
+
+  analogWrite(backRightSpeed, 0);
+  analogWrite(backLeftSpeed, 115);
 }
 
 void Car::backLeft() {

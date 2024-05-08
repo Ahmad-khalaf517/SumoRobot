@@ -77,7 +77,13 @@ void readDistance()
   duration_us = pulseIn(echoPin, HIGH);
 
   // calculate the distance
-  distance = 0.017 * duration_us / 2;
+  distance = 0.017 * duration_us;
+
+  // // print the value to Serial Monitor
+  Serial.print("distance: ");
+  Serial.print(distance);
+  Serial.println(" cm");
+  delay(100);
 }
 
 void stop()
@@ -135,34 +141,31 @@ void loop()
   if (isLnBackLeft && isLnBackRight)
   {
     myCar.forward();
-    delay(200);
   }
   else if (isLnFrontLeft && isLnFrontRight)
   {
     myCar.backward();
-    delay(200);
   }
   else if (isLnBackLeft)
   {
     myCar.turnRight();
-    delay(200);
   }
   else if (isLnBackRight)
   {
     myCar.turnLeft();
-    delay(200);
   }
   else if (isLnFrontLeft)
   {
     myCar.backRight();
-    delay(200);
   }
   else if (isLnFrontRight)
   {
     myCar.backLeft();
-    delay(200);
-  } if (distance <= 100){
-    if(distance >= 50) myCar.forward();
+  }
+  else if (distance <= 50)
+  {
+    if (distance >= 30)
+      myCar.forward();
     else
       myCar.push();
   }
