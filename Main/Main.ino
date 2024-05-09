@@ -1,6 +1,8 @@
-
 #include "Car.h"
 #include "Arduino.h"
+#include <Servo.h>
+
+Servo serv;
 
 int trigPin = A8; // TRIG pin
 int echoPin = 45; // ECHO pin
@@ -65,6 +67,12 @@ void setup()
   pinMode(trigPin, OUTPUT);
   // configure the echo pin to input mode
   pinMode(echoPin, INPUT);
+
+  serv.attach(A0);
+  serv.write(0);
+  delay(2000);
+  serv.write(90);
+  delay(2000);
 }
 
 void readDistance()
